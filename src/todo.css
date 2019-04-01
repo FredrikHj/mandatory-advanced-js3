@@ -5,15 +5,19 @@ body{
 
 /* ============== Main App ============== */
 #appBody{
-  margin-left: calc(50% - 300px);
+  margin-left: calc(50% - 175px);
   margin-top: 10%;
-  width: 600px;
+  width: 350px;
   background-color: white;
   border-radius: 30px;
   padding-top: 5px;
   padding-left: 10px;
   padding-right: 10px;
-  padding-bottom: 20px;
+  padding-bottom: 10px;
+}
+hr{
+  margin-top: -28px;
+  width: 50%;
 }
 main{
 
@@ -25,7 +29,7 @@ main{
   text-align: center;
   width: 100%;
 }
-/* ============== Login ============== */
+/* ============== Header ============== */
 header span{
   margin-left: 200px;
 }
@@ -34,4 +38,81 @@ header span{
   display: flex;
   flex-direction: row;
   justify-content: space-around;
+  align-content: flex-start;
+}
+#errorMess{
+  font-size: 10px;
+  color: red;
+}
+#inloggedUser{
+  position: relative;
+  top: -31px;
+  right: -253px;
+  font-size: 12px;
+}
+#regText{
+  position: relative;
+  right: -258px;
+  bottom: 24px;
+  font-size: 10px;
+  font-weight: bold;
+}
+#logInBtn{
+  position: relative;
+  top: 10px;
+  width: 70px;
+  left: calc(50% - 35px);
+}
+/* ============== Reg ============== */
+#regBtn{
+  position: relative;
+  top: 10px;
+  right: -253px;
+}
+/* ============== TodoList ============== */
+#todoListHead{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+}
+#todoHeadline{
+  margin-top: 1px
+}
+#addTodoitem{
+  height: 25px;
+  font-size: 15px;
+}
+#noneItem{
+  width: 100%;
+  text-align: center;
+  letter-spacing: 1px;
+  color: red;
+  font-weight: bold;
+}
+.itemFrame{
+  border: 1px solid lightgrey;
+  border-radius: 30px;
+}
+.itemContainer{
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  margin-top: 14px;
+}
+.todoitem{
+
+}
+.removeTodoitem{
+
+}
+.middleLineTodoitem{
+  margin-top: 10px
+}
+.submitListBtn{
+  width: 100px;
+  position: relative;
+  top: 35px;
+  left: calc(50% - 40px);
+  text-align: center;
 }
