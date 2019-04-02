@@ -34,7 +34,7 @@ header span{
   margin-left: 200px;
 }
 /* ============== Login ============== */
-#loginContainer{
+#loginContainer, #regContainer{
   display: flex;
   flex-direction: row;
   justify-content: space-around;
