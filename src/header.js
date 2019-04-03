@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import {Helmet} from "react-helmet";
 
 function Header(props) {
+  console.log(props);
   return (
     <>
       <Helmet>
@@ -14,7 +15,7 @@ function Header(props) {
         {
           (props.logedIn.value === false)
           ? <p>Inte inloggad</p>
-          : <p>freddehboy@hotmail.com {/*props.logedIn.mail*/}</p>
+          : <p>{ props.logedIn.userMail }</p>
         }
       </section>
       <p></p>

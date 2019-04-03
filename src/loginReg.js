@@ -8,14 +8,14 @@ export function Reg(props) {
   if (props.logedIn.value === true) return <Redirect to="/List"/>;
   return (
     <>
-    <form>
+    <form onSubmit={ props.submitReg }>
       <div id="regContainer">
           <label htmlFor="regUserName">Användarnamn <br/>
-            <input type="text" id="regUserName" //onChange={ this.addMovie }
+            <input type="text" id="regUserName" onChange={ props.onChangeUserName }
             />
           </label>
           <label htmlFor="regPwd">Lösenord <br/>
-              <input type="text" id="regPwd" //onChange={ this.addMovie }
+              <input type="text" id="regPwd" onChange={ props.onChangeUserPwd }
             />
           </label><br/>
         </div>
@@ -32,11 +32,11 @@ export function Login(props) {
       <form>
         <div id="loginContainer">
           <label htmlFor="loginUserName">Användarnamn <br/>
-            <input type="text" id="loginUserName" //onChange={ this.addMovie }
+            <input type="text" id="loginUserName" onChange={ props.onChangeUserName }
             />
           </label>
           <label htmlFor="loginPwd">Lösenord <span id="errorMess"> Användaren finns inte!</span><br/>
-            <input type="text" id="loginPwd" //onChange={ this.addMovie }
+            <input type="text" id="loginPwd" onChange={ props.onChangeUserPwd }
             />
           </label><br/>
         </div>
