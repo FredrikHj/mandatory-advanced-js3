@@ -16,11 +16,11 @@ class TodoApp extends Component {
       super(props);
       // Sett intialstate for the functions in the app. Group some of them together
       this.state = {
-      redirect: true,
-      regInformation: { userName: '', userPwd: '', decodedToken: {} },
-      logedIn: { value: false, userMail: 'Inte inloggad',  }
-
-    }
+        redirect: true,
+        regInformation: { userName: '', userPwd: '', token: ''},
+        userValid: { value: true, errorMess: '' },
+        logedIn: false
+      }
     //this.userDecodedData = this.userDecodedData;
     this.urlApi = this.urlApi;
     this.logIn = this.logIn.bind(this);
@@ -28,19 +28,22 @@ class TodoApp extends Component {
     this.userEmail = this.userEmail;
     this.onChangeUserName = this.onChangeUserName.bind(this);
     this.onChangeUserPwd = this.onChangeUserPwd.bind(this);
+    this.logOut = this.logOut.bind(this);
   }
   componentDidMount() {
     this.urlApi = 'http://ec2-13-53-32-89.eu-north-1.compute.amazonaws.com:3000';
     
     //  Check if localStorage is containing a user if yes the user will always be inlogged
-    /*if (localStorage.getItem('name') !== 'undefined' && localStorage.getItem('name') !== null) {
-      console.log(this.userDecodedData);
-      
+    if (localStorage.getItem('userDataToJson') !== 'undefined' && localStorage.getItem('userDataToJson') !== null) {
+      let getParsedUserStoredData = JSON.parse(localStorage.getItem('userDataToJson'));
+
       this.setState({
-        logedIn: { ...this.state.logedIn, value: true }
-      });
-      
-    }*/
+        logedIn: true,
+        regInformation: 
+          { ...this.state.regInformation,
+            userName: getParsedUserStoredData.email }
+      });     
+    }
   }
   onChangeUserName(e) {
     let targetUserName = e.target.value;
@@ -48,8 +51,7 @@ class TodoApp extends Component {
     this.setState({
       regInformation: {
         ...this.state.regInformation,
-        userName: targetUserName },
-      logedIn: { ...this.state.logedIn, userMail: targetUserName}
+        userName: targetUserName }
     });
   }
   onChangeUserPwd(e) {
@@ -78,11 +80,7 @@ class TodoApp extends Component {
     .then(response => {
       if (response.status === 201) {
         this.setState({
-          logedIn: {
-            ...this.state.logedIn,
-            value: true,
-            userMail: this.response.data.email
-          }
+          redirect: true
         });
       }
     })
@@ -100,40 +98,59 @@ class TodoApp extends Component {
       password: getYorUserPwd
     })
     .then(response => {
+
       if (response.status === 200) {
         let userSecureJWT = response.data.token;
-        var userDecodedData = SecureKey.decode(userSecureJWT);
+        let userDecodedData = SecureKey.decode(userSecureJWT);
 
         //fredde@mail.com 1234
 
-
-        ---------------------
         // Store the userInlogg even when the browser is closed or refreshed
-          
-          let userDatatoJson = JSON.stringify(userDecodedData);
-          localStorage.setItem(userDatatoJson);
-        } 
-        
-        console.log(localStorage.setUser(userDecodedData));
-
-        this.setState({
-          logedIn: { ...this.state.logedIn, value: true }
+        localStorage.setItem('userDataToJson', JSON.stringify(userDecodedData));
+  
+         this.setState({
+          regInformation: { 
+            ...this.state.regInformation,
+            token: userSecureJWT },
+          redirect: false,
+          logedIn: true
         });
-      })
+      }
+    })  
     .catch((error) => {
-      console.log(error);
+      let errorData = error.response
+      console.log(errorData.data.message);
+      
+      if (errorData.status === 400 || errorData.status === 401) {
+        this.setState({
+          userValid: { value: false, errorMess: errorData.data.message }
+        });      
+      }
+
     })
+    console.log('Du är inloggad :)');
+    
     e.preventDefault();
   }
+  logOut() {
+    localStorage.clear('userDataToJson');
 
-  render() {
-    console.log(window.localStorage.getItem('name'));
+    this.setState({
+       logedIn: false,
+       userValid: { value: true, errorMess: '' }
+    });
+    console.log('Du är utloggad :)');
+  }
+  render() {   
+    console.log(this.state.logedIn);
     
     return (
       <>
         <div id="appBody">
         <Header
+          regUser={ this.state.regInformation.userName }
           logedIn={ this.state.logedIn }
+          logOut={ this.logOut }
         />
           <main>
             <hr/>
@@ -143,6 +160,7 @@ class TodoApp extends Component {
                   onChangeUserName={ this.onChangeUserName }
                   onChangeUserPwd={ this.onChangeUserPwd }
                   logedIn={ this.state.logedIn }
+                  userValid={ this.state.userValid }
                 />}
               />
 
@@ -153,9 +171,11 @@ class TodoApp extends Component {
                   submitReg={ this.submitReg }
                 />}
               />
-            <Route exact path="/List" render={(props) => <TodoList {...props}
+            <Route exact path="/Lista" render={(props) => <TodoList {...props}
                   onChangeUserName={ this.onChangeUserName }
                   onChangeUserPwd={ this.onChangeUserPwd }
+                  logedIn={ this.state.logedIn }
+                  userToken={ this.state.regInformation.token }
                 />}
               />
             </Router>
@@ -163,7 +183,6 @@ class TodoApp extends Component {
         </div>
       </>
     );
-
     if (this.state.redirect === true) return <Redirect to="/"/>;
   }
 }

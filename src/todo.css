@@ -13,7 +13,7 @@ body{
   padding-top: 5px;
   padding-left: 10px;
   padding-right: 10px;
-  padding-bottom: 10px;
+  padding-bottom: 15px;
 }
 hr{
   margin-top: -28px;
@@ -22,8 +22,6 @@ hr{
 main{
 
 }
-
-
 #pagesHeadLine{
   position: relative;
   text-align: center;
@@ -33,6 +31,12 @@ main{
 header span{
   margin-left: 200px;
 }
+#logOutBtn{
+  position: relative;
+  top: 21px;
+  right: 60px;
+  width: 70px;
+}
 /* ============== Login ============== */
 #loginContainer, #regContainer{
   display: flex;
@@ -40,9 +44,21 @@ header span{
   justify-content: space-around;
   align-content: flex-start;
 }
+#errorRegContainer{
+  position: relative;
+  left: 11px;
+}
 #errorMess{
   font-size: 10px;
   color: red;
+}
+#regText{
+  display: block;
+  margin-top: -22px;
+  margin-left: 117px;
+  font-size: 10px;
+  font-weight: bold;
+  margin-bottom: -21px;
 }
 #inloggedUser{
   position: relative;
@@ -50,25 +66,20 @@ header span{
   right: -253px;
   font-size: 12px;
 }
-#regText{
-  position: relative;
-  right: -258px;
-  bottom: 24px;
-  font-size: 10px;
-  font-weight: bold;
-}
 #logInBtn{
   position: relative;
-  top: 10px;
+  top: -62.5px;
   width: 70px;
-  left: calc(50% - 35px);
+  left: 281.5px;
 }
 /* ============== Reg ============== */
+
 #regBtn{
   position: relative;
   top: 10px;
   right: -253px;
 }
+
 /* ============== TodoList ============== */
 #todoListHead{
   display: flex;
@@ -92,16 +103,22 @@ header span{
 .itemFrame{
   border: 1px solid lightgrey;
   border-radius: 30px;
+  margin-top: 20px;
 }
 .itemContainer{
-  width: 100%;
+  margin-left: 30px;
+  width: 283px;
   display: flex;
   flex-direction: row;
   justify-content: space-around;
   margin-top: 14px;
 }
-.todoitem{
-
+.lineAddItem{
+  width: 1px;
+text-align: center;
+}
+.todoItem{
+  border: none;
 }
 .removeTodoitem{
 
