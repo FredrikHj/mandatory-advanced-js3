@@ -31,10 +31,11 @@ class TodoList extends Component {
   }
   componentDidMount() {
     this.urlApi = 'http://ec2-13-53-32-89.eu-north-1.compute.amazonaws.com:3000';
+
     this.itemCounter = 0;
-    axios.post(this.urlApi, + '/todos', {
+    axios.get(this.urlApi, + '/todo ', {
       headers: {
-        Authorization:  'Barer' + this.props.token }
+        Authorization: 'Bearer' + this.props.userToken }
     })
     .then(response => {
       console.log(response);
@@ -44,9 +45,6 @@ class TodoList extends Component {
 
 
     });
-    this.addTodo = [];
-
-
   }
   addItem(e) {
     // Add a input string into my array to be displayed i the list
@@ -56,20 +54,24 @@ class TodoList extends Component {
 
     //React according the key Enter
     if(getKeyDown === 'Enter'){
+      console.log(this.urlApi);
+            
       this.itemCounter += 1;
-      let addTodoItem = <AddTodo 
-  
-      itemCounter={ this.itemCounter }
-      getItemIntoList={ getItemIntoList }/>;
-      this.setState({
-        todoItem: [
-          ...this.state.todoItem,
-          this.addTodo.push(addTodoItem)
-        ]
+      /* Send the inputed item into the component which has the content and structure of the item to be displayed later fo the user.
+         The component will be send to the server and the server is send the todo list back. */
+      let addTodoItem = <AddTodo itemCounter={ this.itemCounter } getItemIntoList={ getItemIntoList }/>;
+      
+      axios.post(this.urlApi, + '/todo ', {
+        content: 'dsv' }, {
+          headers: {
+            Authorization: 'Bearer' + this.props.userToken }
+        }
+      ).then(response => {
+        console.log(response);
+        
+      }).catch(error => {
       });
     }
-    
-    
   }
   removeItem(e) {
     console.log();
@@ -85,6 +87,8 @@ class TodoList extends Component {
     e.preventDefault();
   }
   render() {
+    console.log(this.props.userToken);
+    
     if (this.props.logedIn === false) return <Redirect to="/"/>;
       console.log('Listan');
       

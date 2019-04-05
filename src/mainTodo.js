@@ -37,6 +37,8 @@ class TodoApp extends Component {
     if (localStorage.getItem('userDataToJson') !== 'undefined' && localStorage.getItem('userDataToJson') !== null) {
       let getParsedUserStoredData = JSON.parse(localStorage.getItem('userDataToJson'));
 
+    console.log(getParsedUserStoredData);
+    
       this.setState({
         logedIn: true,
         regInformation: 
@@ -142,7 +144,7 @@ class TodoApp extends Component {
     console.log('Du är utloggad :)');
   }
   render() {   
-    console.log(this.state.logedIn);
+    console.log(this.state.regInformation.token);
     
     return (
       <>
