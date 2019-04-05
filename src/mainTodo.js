@@ -17,12 +17,13 @@ class TodoApp extends Component {
       // Sett intialstate for the functions in the app. Group some of them together
       this.state = {
         redirect: true,
-        regInformation: { userName: '', userPwd: '', token: ''},
+        regInformation: { userName: '', token: ''},
         userValid: { value: true, errorMess: '' },
         logedIn: false
       }
     //this.userDecodedData = this.userDecodedData;
     this.urlApi = this.urlApi;
+    //this.getUserData = this.getUserData;
     this.logIn = this.logIn.bind(this);
     this.submitReg = this.submitReg.bind(this);
     this.userEmail = this.userEmail;
@@ -32,18 +33,21 @@ class TodoApp extends Component {
   }
   componentDidMount() {
     this.urlApi = 'http://ec2-13-53-32-89.eu-north-1.compute.amazonaws.com:3000';
-    
-    //  Check if localStorage is containing a user if yes the user will always be inlogged
-    if (localStorage.getItem('userDataToJson') !== 'undefined' && localStorage.getItem('userDataToJson') !== null) {
-      let getParsedUserStoredData = JSON.parse(localStorage.getItem('userDataToJson'));
+          
+    let getParsedUserStoredData = JSON.parse(localStorage.getItem('userDataToJson'));
+    console.log(getParsedUserStoredData);    
 
-    console.log(getParsedUserStoredData);
-    
+    //  Check if localStorage is containing a user if yes the user will always be inlogged
+     if (localStorage.getItem('userDataToJson') !== 'undefined' && localStorage.getItem('userDataToJson') !== null) {
+      //let getParsedUserStoredData = JSON.parse(localStorage.getItem('userDataToJson'));
+
+
+      
       this.setState({
         logedIn: true,
-        regInformation: 
-          { ...this.state.regInformation,
-            userName: getParsedUserStoredData.email }
+        regInformation: { 
+          userName: getParsedUserStoredData.email,
+          token: getParsedUserStoredData.token}
       });     
     }
   }
@@ -103,17 +107,24 @@ class TodoApp extends Component {
 
       if (response.status === 200) {
         let userSecureJWT = response.data.token;
-        let userDecodedData = SecureKey.decode(userSecureJWT);
 
+        // Get the userName for the header
+        let userDecodedData = SecureKey.decode(userSecureJWT);
+        let userName = userDecodedData.email;
+        let inlogedUserInfo = { email: userName, token: userSecureJWT };
+
+        
+        
+        //localStorage.setItem('userDataToJson', inlogedUserInfo//JSON.stringify(userDecodedData));
         //fredde@mail.com 1234
 
         // Store the userInlogg even when the browser is closed or refreshed
-        localStorage.setItem('userDataToJson', JSON.stringify(userDecodedData));
-  
+        localStorage.setItem('userDataToJson', JSON.stringify(inlogedUserInfo));
+        
          this.setState({
-          regInformation: { 
+          /*regInformation: { 
             ...this.state.regInformation,
-            token: userSecureJWT },
+            token: userSecureJWT },*/
           redirect: false,
           logedIn: true
         });
@@ -143,9 +154,7 @@ class TodoApp extends Component {
     });
     console.log('Du är utloggad :)');
   }
-  render() {   
-    console.log(this.state.regInformation.token);
-    
+  render() {  
     return (
       <>
         <div id="appBody">

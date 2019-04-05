@@ -22,6 +22,7 @@ class TodoList extends Component {
       todoItem: []
     }
     this.urlApi = this.urlApi;
+    this.urlApiTodoStr =this.urlApiTodoStr;
     this.itemCounter = this.itemCounter;
     this.addTodo = this.addTodo;
     this.addItem = this.addItem.bind(this);
@@ -31,15 +32,18 @@ class TodoList extends Component {
   }
   componentDidMount() {
     this.urlApi = 'http://ec2-13-53-32-89.eu-north-1.compute.amazonaws.com:3000';
-
+    this.urlApiTodoStr = 'http://ec2-13-53-32-89.eu-north-1.compute.amazonaws.com:3000/todos'; 
+    console.log(this.props.userToken);
     this.itemCounter = 0;
-    axios.get(this.urlApi, + '/todo ', {
+    axios.get(this.urlApi, + '/todos', {
       headers: {
-        Authorization: 'Bearer' + this.props.userToken }
+        Authorization: 'Bearer' + this.props.userToken.value }
     })
     .then(response => {
       console.log(response);
-      
+      this.setState({
+          todoItem: response.data
+        });
     })
     .catch(error => {
 
@@ -61,10 +65,10 @@ class TodoList extends Component {
          The component will be send to the server and the server is send the todo list back. */
       let addTodoItem = <AddTodo itemCounter={ this.itemCounter } getItemIntoList={ getItemIntoList }/>;
       
-      axios.post(this.urlApi, + '/todo ', {
+      axios.post(this.urlApiTodoStr, {
         content: 'dsv' }, {
           headers: {
-            Authorization: 'Bearer' + this.props.userToken }
+            Authorization: 'Bearer' + this.props.userToken.value }
         }
       ).then(response => {
         console.log(response);
@@ -88,6 +92,7 @@ class TodoList extends Component {
   }
   render() {
     console.log(this.props.userToken);
+    console.log(this.state.todoItem);
     
     if (this.props.logedIn === false) return <Redirect to="/"/>;
       console.log('Listan');
@@ -110,7 +115,7 @@ class TodoList extends Component {
           : <>
               <section className="itemFrame">
               <form>
-                  { this.addTodo }
+                  { this.state.addItem }
                 </form><br/>
               </section>
             </>
