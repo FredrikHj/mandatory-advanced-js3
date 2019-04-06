@@ -1,12 +1,11 @@
 import React, { Component } from 'react';
-import {Helmet} from "react-helmet";
 import SecureKey from 'jsonwebtoken';
 import axios from 'axios';
 
+import CSS from './todoCSS';
 import TodoList from './todoLists';
 import Header from './header';
 import { Reg, Login } from './loginReg';
-
 
 // React Router - ES6 modules
 import { BrowserRouter as Router, Route, Link, Redirect } from "react-router-dom";
@@ -157,7 +156,7 @@ class TodoApp extends Component {
   render() {  
     return (
       <>
-        <div id="appBody">
+        <div className={ CSS.appBody }>
         <Header
           regUser={ this.state.regInformation.userName }
           logedIn={ this.state.logedIn }

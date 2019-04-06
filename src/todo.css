@@ -4,7 +4,7 @@ body{
 }
 
 /* ============== Main App ============== */
-#appBody{
+/* #appBody{
   margin-left: calc(50% - 175px);
   margin-top: 10%;
   width: 350px;
@@ -14,7 +14,7 @@ body{
   padding-left: 10px;
   padding-right: 10px;
   padding-bottom: 15px;
-}
+} */
 hr{
   margin-top: -28px;
   width: 50%;
