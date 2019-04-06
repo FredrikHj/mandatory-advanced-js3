@@ -104,19 +104,30 @@ header span{
   border: 1px solid lightgrey;
   border-radius: 30px;
   margin-top: 20px;
+  height: 400px;
+  overflow-y: scroll;
+}
+.listTable{
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
 }
 .itemContainer{
   margin-left: 30px;
   width: 283px;
   margin-top: 14px;
 }
+.todoTNr{
+  width: 25px;
+}
 .lineAddItem{
   margin-left: 10px;
 }
 .todoItem{
   display: inline-block;
-  padding-left: 15px;
-  width: 73%;
+  margin-left: 10px;
+  width: 71%;
+  border: 1px solid red;
 }
 .removeTodo{
   width: 23px;

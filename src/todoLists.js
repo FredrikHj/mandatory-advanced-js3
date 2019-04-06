@@ -4,7 +4,6 @@ import axios from 'axios';
 
 // React Router - ES6 modules
 import { BrowserRouter as Router, Route, Link, Redirect } from "react-router-dom";
-let itemCounter = 0;
 
 class TodoList extends Component {
   constructor(props) {
@@ -12,13 +11,15 @@ class TodoList extends Component {
     this.state = {
       todoItem: []
     }
+    this.apiUrl = this.apiUrl;
     this.addItem = this.addItem.bind(this);
     this.removeItem = this.removeItem.bind(this);
     this.submitList = this.submitList.bind(this);
     
   }
   componentDidMount() {
-    let API_ROOT = "http://ec2-13-53-32-89.eu-north-1.compute.amazonaws.com:3000";
+    this.apiUrl = 'http://ec2-13-53-32-89.eu-north-1.compute.amazonaws.com:3000';
+    let API_ROOT = this.apiUrl;
     console.log(this.props.userToken);
     this.itemCounter = 0;
     axios.get(API_ROOT + '/todos', {
@@ -48,37 +49,39 @@ class TodoList extends Component {
     if(getKeyDown === 'Enter'){      
       /* Send the inputed item into the component which has the content and structure of the item to be displayed later fo the user.
       The component will be send to the server and the server is send the todo list back. */
-      let API_ROOT = "http://ec2-13-53-32-89.eu-north-1.compute.amazonaws.com:3000";
+      let API_ROOT = this.apiUrl;
       axios.post(API_ROOT + '/todos', {
-        content: getInputStr }, {
-          headers: {
-            Authorization: 'Bearer ' + this.props.userToken }
-          }
-          ).then(response => {
-            console.log(response);
-            
-          }).catch(error => {
-          });
-        }
-      } 
+        content: getInputStr }, { headers: { Authorization: 'Bearer ' + this.props.userToken }
+      }).then(response => {
+          console.log(response);
+          this.setState({ todoItem: [ 
+            ...this.state.todoItem,
+            response.data.todo ]
+          });           
+        }).catch(error => {
+     });
+    }
+  console.log(this.state.todoItem);
+  
+  } 
   removeItem(e) {
-    let targetRemoveBtn = e.target.value;
-    console.log(targetRemoveBtn);
-    let API_ROOT = "http://ec2-13-53-32-89.eu-north-1.compute.amazonaws.com:3000";
-    axios.delete(API_ROOT + '/todos/' + targetRemoveBtn, {
-      headers: {
-        Authorization: 'Bearer ' + this.props.userToken }
-      }).then(resonse => {
-      console.log(resonse);
+    let targetRemoveBtnIndex = parseInt(e.target.value);
+    console.log(targetRemoveBtnIndex);
+    let targetRemoveBtnId = e.target.id;
+    let API_ROOT = this.apiUrl;
+    axios.delete(API_ROOT + '/todos/' + targetRemoveBtnId, {
+      headers: { Authorization: 'Bearer ' + this.props.userToken }
+      }).then(response => {
+        console.log(response);
+        
+        
+      })
       
-
-    })
-
-    let newMTodoList = [...this.state.todoItem.slice(0, targetRemoveBtn), ...this.state.todoItem.slice(targetRemoveBtn + 1)
-    ];
-
-    this.setState({ targetRemoveBtn: newMTodoList});
-
+      let newMTodoList = [...this.state.todoItem.slice(0, targetRemoveBtnIndex), ...this.state.todoItem.slice(targetRemoveBtnIndex + 1)
+      ];
+      
+      this.setState({ todoItem: newMTodoList});
+      
     e.preventDefault();
   }
   submitList(e) {
@@ -91,17 +94,13 @@ class TodoList extends Component {
     e.preventDefault();
   }
   render() {
+    let itemCounter = -1;
+    let todoNr = 0;
     let renderTodos = this.state.todoItem;
     console.log(renderTodos);
-    
-    //showItem(insurtetItem);
-    console.log(this.props.userToken);
-
-    
+        
     if (this.props.logedIn === false) return <Redirect to="/"/>;
-    console.log('Listan');
     
-    console.log(this.addTodo);
     return (
       <>
        <Helmet>
@@ -110,7 +109,6 @@ class TodoList extends Component {
       </Helmet>
         <section id="todoListHead">
           <p id="todoHeadline">Att göra </p>
-          {/*//<button id="addTodoItem" onClick={ this.addItem }>Lägga till</button>*/}
           <input type="text" id="typeTodoItem" onKeyPress={ this.addItem }/>
         </section>
         {
@@ -123,11 +121,17 @@ class TodoList extends Component {
                     renderTodos.map((obj) => {
                       console.log(obj);
                       itemCounter += 1;
+                      todoNr += 1;
                       return (
                         <section className="itemContainer" key={ itemCounter }>
-                          { itemCounter + '.)'}<span className="lineAddItem">-</span>
-                          <span className="todoItem">{ obj.content.charAt(0).toUpperCase() + obj.content.slice(1) }</span>
-                          <button className="removeTodo" value={ obj.id } onClick={ this.removeItem }>X</button>
+                          <div className="listTable">
+                            <div className="todoTNr">{todoNr + '.)'}</div>
+                            <span className="lineAddItem">-</span>
+                            <div className="todoItem"><span>{ obj.content.charAt(0).toUpperCase() + obj.content.slice(1) }</span></div>
+                            <div className="removeTodo"><button id={ obj.id } value={ obj.id } onClick={ this.removeItem }>X</button></div>
+                          </div>
+                          
+                        
                         </section>
                       );
                     })
