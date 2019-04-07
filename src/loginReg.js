@@ -1,12 +1,15 @@
 import React, { Component } from 'react';
 import {Helmet} from "react-helmet";
 
+// CSS is imported
+import { regCSS, loginCSS } from './todoCSS';
+
 // React Router - ES6 modules
 import { BrowserRouter as Router, Route, Link, Redirect } from "react-router-dom";
 
 export function Reg(props) {
   console.log(props);
-  if (props.logedIn.value === true) return <Redirect to="/List"/>;
+  if (props.logedIn === true) return <Redirect to="/"/>;
   return (
     <>
       <Helmet>
@@ -14,7 +17,7 @@ export function Reg(props) {
         <title>Todo - Reg</title>
       </Helmet>
       <form onSubmit={ props.submitReg }>
-        <div id="regContainer">
+        <div className={ regCSS.regContainer }>
             <label htmlFor="regUserName">Användarnamn <br/>
               <input type="text" id="regUserName" onChange={ props.onChangeUserName }
               />
@@ -25,7 +28,13 @@ export function Reg(props) {
             </label><br/>
           </div>
       </form>
-        <button id="regBtn" onClick={ props.submitReg }>Registrera!</button>
+
+          <section className={ regCSS.errorRegContainer } //style={(props.errorData.validRegInfo === true) ? {display: 'block'} : {display: 'none'}}
+          >
+            <p>{ props.errorData.errorMess }</p>
+          </section>
+
+         <button className={ regCSS.regBtn } onClick={ props.submitReg }>Registrera!</button>
     </>
   );
 }
@@ -42,7 +51,7 @@ export function Login(props) {
     </Helmet>
       <form>
         
-        <div id="loginContainer">
+        <div className={ loginCSS.loginContainer }>
           <label htmlFor="loginUserName">Användarnamn <br/>
             <input type="text" id="loginUserName" onChange={ props.onChangeUserName }
             />
@@ -52,12 +61,12 @@ export function Login(props) {
             />
           </label><br/>
         </div>
-        <section id="errorRegContainer" style={(props.userValid.value === false) ? {display: 'block'} : {display: 'none'}}>
-          <p id="errorMess" >{ props.userValid.errorMess }</p>
-          <Link id="regText" to="/Reg" onClick={ props.reg }>Registrera dig?</Link>
+        <section className={ loginCSS.errorLoginContainer } style={(props.userValid.value === false) ? {display: 'block'} : {display: 'none'}}>
+          <p className={ loginCSS.errorLoginMess }>{ props.userValid.errorMess }</p>
+          <Link className={ loginCSS.regText } to="/Reg" onClick={ props.reg }>Registrera dig?</Link>
         </section>
       </form>
-      <input type="submit" id="logInBtn" onClick={ props.logIn } value="Logga In" />
+      <input type="submit" className={ loginCSS.logInBtn } onClick={ props.logIn } value="Logga In" />
     </>
   );
 }

@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './todo.css';
+import './generall.css';
 import App from './mainTodo';
 import * as serviceWorker from './serviceWorker';
 

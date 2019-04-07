@@ -2,6 +2,9 @@ import React, { Component } from 'react';
 import {Helmet} from "react-helmet";
 import axios from 'axios';
 
+// CSS is imported
+import { todoListCSS } from './todoCSS';
+
 // React Router - ES6 modules
 import { BrowserRouter as Router, Route, Link, Redirect } from "react-router-dom";
 
@@ -107,15 +110,15 @@ class TodoList extends Component {
           <meta charSet="utf-8" />
           <title>Todolista</title>
       </Helmet>
-        <section id="todoListHead">
-          <p id="todoHeadline">Att göra </p>
-          <input type="text" id="typeTodoItem" onKeyPress={ this.addItem }/>
+        <section className={ todoListCSS.todoListHead }>
+          <p className={ todoListCSS.todoHeadline }>Att göra </p>
+          <input type="text" className={ todoListCSS.typeTodoItem } onKeyPress={ this.addItem }/>
         </section>
         {
           (renderTodos.length === 0)
-          ? <p id="noneItem">Inget att visa !!!</p>
+          ? <p className={ todoListCSS.noneItem }>Inget att visa !!!</p>
           : <>
-              <section className="itemFrame">
+              <section className={ todoListCSS.itemFram }>
                 <form>
                   { 
                     renderTodos.map((obj) => {
@@ -123,12 +126,12 @@ class TodoList extends Component {
                       itemCounter += 1;
                       todoNr += 1;
                       return (
-                        <section className="itemContainer" key={ itemCounter }>
-                          <div className="listTable">
-                            <div className="todoTNr">{todoNr + '.)'}</div>
-                            <span className="lineAddItem">-</span>
-                            <div className="todoItem"><span>{ obj.content.charAt(0).toUpperCase() + obj.content.slice(1) }</span></div>
-                            <div className="removeTodo"><button id={ obj.id } value={ obj.id } onClick={ this.removeItem }>X</button></div>
+                        <section className={ todoListCSS.itemContainer } key={ itemCounter }>
+                          <div className={ todoListCSS.listTable }>
+                            <div className={ todoListCSS.todoTNr }>{todoNr + '.)'}</div>
+                            <span className={ todoListCSS.lineAddItem }>-</span>
+                            <div className={ todoListCSS.todoItem }><span>{ obj.content.charAt(0).toUpperCase() + obj.content.slice(1) }</span></div>
+                            <div className={ todoListCSS.removeTodo }><button id={ obj.id } value={ obj.id } onClick={ this.removeItem }>X</button></div>
                           </div>
                           
                         

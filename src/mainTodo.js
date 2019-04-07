@@ -2,10 +2,12 @@ import React, { Component } from 'react';
 import SecureKey from 'jsonwebtoken';
 import axios from 'axios';
 
-import CSS from './todoCSS';
 import TodoList from './todoLists';
 import Header from './header';
 import { Reg, Login } from './loginReg';
+
+// CSS is imported
+import { mainWindowCSS } from './todoCSS';
 
 // React Router - ES6 modules
 import { BrowserRouter as Router, Route, Link, Redirect } from "react-router-dom";
@@ -16,7 +18,7 @@ class TodoApp extends Component {
       // Sett intialstate for the functions in the app. Group some of them together
       this.state = {
         redirect: true,
-        regInformation: { userName: '', token: ''},
+        regInformation: { userName: '', token: '', validRegInfo: true, errorMess: ''},
         userValid: { value: true, errorMess: '' },
         logedIn: false
       }
@@ -90,9 +92,33 @@ class TodoApp extends Component {
       }
     })
     .catch((error) => {
-      console.log(console.error);
+      let errorData = error.response;
+      let validMess = errorData.data.message;      
+      
+      /* String clean up -> turn str into array, one word is one index --> remove index 0 ---> loop through the array into a string sentence againg.
+         Last turn the first letter to a bigg one */
+      let typeOfValidMess = errorData.data.details[0].message
+      let errorStrCleanUp = typeOfValidMess.split(' ');
+      errorStrCleanUp.shift();
+
+      let arrForDisplayWords = [];
+      let newErrorMess = '';
+      for (let errorStrCleanUpEachWord of errorStrCleanUp) {
+        arrForDisplayWords.push(errorStrCleanUpEachWord);
+        newErrorMess = arrForDisplayWords.join(' ');
+      }
+      let typeOfValidMessCorr = newErrorMess.charAt(0).toUpperCase() + newErrorMess.slice(1)
+      // ========================================================================================================================================= 
+      if ( errorData.status === 400 || errorData.status === 401) {
+        this.setState({
+          regInformation: {
+            ...this.state.regInformation,
+            validRegInfo: false,
+            errorMess: errorData.data.message + ': ' + typeOfValidMessCorr
+          }
+        }); 
+      }
     })
-    console.log(this.state.logedIn);
     e.preventDefault();
   }
   logIn(e) {
@@ -112,18 +138,11 @@ class TodoApp extends Component {
         let userName = userDecodedData.email;
         let inlogedUserInfo = { email: userName, token: userSecureJWT };
 
-        
-        
-        //localStorage.setItem('userDataToJson', inlogedUserInfo//JSON.stringify(userDecodedData));
-        //fredde@mail.com 1234
 
         // Store the userInlogg even when the browser is closed or refreshed
         localStorage.setItem('userDataToJson', JSON.stringify(inlogedUserInfo));
         
          this.setState({
-          /*regInformation: { 
-            ...this.state.regInformation,
-            token: userSecureJWT },*/
           redirect: false,
           logedIn: true
         });
@@ -153,17 +172,17 @@ class TodoApp extends Component {
     });
     console.log('Du är utloggad :)');
   }
-  render() {  
+  render() {
     return (
       <>
-        <div className={ CSS.appBody }>
+        <div className={ mainWindowCSS.appBody }>
         <Header
           regUser={ this.state.regInformation.userName }
           logedIn={ this.state.logedIn }
           logOut={ this.logOut }
         />
           <main>
-            <hr/>
+            <hr className={ mainWindowCSS.hr }/>
             <Router>
               <Route exact path="/" render={(props) => <Login {...props}
                   logIn={ this.logIn }
@@ -179,6 +198,7 @@ class TodoApp extends Component {
                   onChangeUserName={ this.onChangeUserName }
                   onChangeUserPwd={ this.onChangeUserPwd }
                   submitReg={ this.submitReg }
+                  errorData={ this.state.regInformation }
                 />}
               />
             <Route exact path="/Lista" render={(props) => <TodoList {...props}
