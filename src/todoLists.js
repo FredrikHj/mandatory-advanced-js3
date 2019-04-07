@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, PureComponent } from 'react';
 import {Helmet} from "react-helmet";
 import axios from 'axios';
 
@@ -8,7 +8,7 @@ import { todoListCSS } from './todoCSS';
 // React Router - ES6 modules
 import { BrowserRouter as Router, Route, Link, Redirect } from "react-router-dom";
 
-class TodoList extends Component {
+class TodoList extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
@@ -56,16 +56,16 @@ class TodoList extends Component {
       axios.post(API_ROOT + '/todos', {
         content: getInputStr }, { headers: { Authorization: 'Bearer ' + this.props.userToken }
       }).then(response => {
-          console.log(response);
-          this.setState({ todoItem: [ 
-            ...this.state.todoItem,
-            response.data.todo ]
-          });           
-        }).catch(error => {
-     });
+        console.log(response);
+        this.setState({ todoItem: [ 
+          ...this.state.todoItem,
+          response.data.todo ]
+        });           
+      }).catch(error => {
+      });
     }
-  console.log(this.state.todoItem);
-  
+    console.log(this.state.todoItem);
+    
   } 
   removeItem(e) {
     let targetRemoveBtnIndex = parseInt(e.target.value);
@@ -74,17 +74,17 @@ class TodoList extends Component {
     let API_ROOT = this.apiUrl;
     axios.delete(API_ROOT + '/todos/' + targetRemoveBtnId, {
       headers: { Authorization: 'Bearer ' + this.props.userToken }
-      }).then(response => {
-        console.log(response);
-        
-        
-      })
+    }).then(response => {
+      console.log(response);
       
-      let newMTodoList = [...this.state.todoItem.slice(0, targetRemoveBtnIndex), ...this.state.todoItem.slice(targetRemoveBtnIndex + 1)
-      ];
       
-      this.setState({ todoItem: newMTodoList});
-      
+    })
+    
+    let newMTodoList = [...this.state.todoItem.slice(0, targetRemoveBtnIndex), ...this.state.todoItem.slice(targetRemoveBtnIndex + 1)
+    ];
+    
+    this.setState({ todoItem: newMTodoList});
+    
     e.preventDefault();
   }
   submitList(e) {
@@ -97,11 +97,12 @@ class TodoList extends Component {
     e.preventDefault();
   }
   render() {
+    console.log('todoLists');
     let itemCounter = -1;
     let todoNr = 0;
     let renderTodos = this.state.todoItem;
     console.log(renderTodos);
-        
+    
     if (this.props.logedIn === false) return <Redirect to="/"/>;
     
     return (

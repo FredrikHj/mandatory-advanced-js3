@@ -8,7 +8,6 @@ import { regCSS, loginCSS } from './todoCSS';
 import { BrowserRouter as Router, Route, Link, Redirect } from "react-router-dom";
 
 export function Reg(props) {
-  console.log(props);
   if (props.logedIn === true) return <Redirect to="/"/>;
   return (
     <>
@@ -28,15 +27,10 @@ export function Reg(props) {
             </label><br/>
           </div>
       </form>
-
-          <section className={ regCSS.errorRegContainer }>
-            <button className={ regCSS.regBtn } onClick={ props.submitReg }>Registrera!</button>
-            <span
-            
-            >{ props.errorData.errorMess }   
-            </span>
-          </section>
-
+      <section className={ regCSS.errorRegContainer }>
+        <button className={ regCSS.regBtn } onClick={ props.submitReg }>Registrera!</button>
+        <span className={ regCSS.errorRegMess }>{ props.errorData.errorMess }</span>
+      </section>
     </>
   );
   //style={(props.errorData.validRegInfo === true) ? {display: 'block'} : {display: 'none'}} */

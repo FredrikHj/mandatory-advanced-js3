@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, PureComponent } from 'react';
 import SecureKey from 'jsonwebtoken';
 import axios from 'axios';
 
@@ -12,7 +12,7 @@ import { mainWindowCSS } from './todoCSS';
 // React Router - ES6 modules
 import { BrowserRouter as Router, Route, Link, Redirect } from "react-router-dom";
 
-class TodoApp extends Component {
+class TodoApp extends PureComponent {
     constructor(props) {
       super(props);
       // Sett intialstate for the functions in the app. Group some of them together
@@ -22,9 +22,9 @@ class TodoApp extends Component {
         userValid: { value: true, errorMess: '' },
         logedIn: false
       }
-    //this.userDecodedData = this.userDecodedData;
+
     this.urlApi = this.urlApi;
-    //this.getUserData = this.getUserData;
+
     this.logIn = this.logIn.bind(this);
     this.submitReg = this.submitReg.bind(this);
     this.userEmail = this.userEmail;
@@ -63,7 +63,6 @@ class TodoApp extends Component {
   }
   onChangeUserPwd(e) {
     let targetUserPwd = e.target.value;
-    console.log(targetUserPwd);
     this.setState({
       regInformation: {
         ...this.state.regInformation,
@@ -85,19 +84,33 @@ class TodoApp extends Component {
       }
     )
     .then(response => {
+
+      
       if (response.status === 201) {
+              console.log(response);
         this.setState({
           redirect: true
         });
       }
     })
     .catch((error) => {
+      let typeOfValidMess, chosenErrorMess;
       let errorData = error.response;
-      let validMess = errorData.data.message;      
+      let validMess = errorData.data.message;
+     
+     // Check for the key details[0] and choose the corr path
+     if ('details' in errorData.data ) {
+      typeOfValidMess = errorData.data.details[0].message;
+      chosenErrorMess = errorData.data.message + ': ' + typeOfValidMessCorr;
+     } 
+     else {
+      typeOfValidMess = errorData.data.message;
+      chosenErrorMess = errorData.data.message;
+     }
+      console.log(errorData);
       
       /* String clean up -> turn str into array, one word is one index --> remove index 0 ---> loop through the array into a string sentence againg.
          Last turn the first letter to a bigg one */
-      let typeOfValidMess = errorData.data.details[0].message
       let errorStrCleanUp = typeOfValidMess.split(' ');
       errorStrCleanUp.shift();
 
@@ -114,7 +127,7 @@ class TodoApp extends Component {
           regInformation: {
             ...this.state.regInformation,
             validRegInfo: false,
-            errorMess: errorData.data.message + ': ' + typeOfValidMessCorr
+            errorMess: chosenErrorMess
           }
         }); 
       }
@@ -173,6 +186,7 @@ class TodoApp extends Component {
     console.log('Du är utloggad :)');
   }
   render() {
+    console.log('mainTodo');
     return (
       <>
         <div className={ mainWindowCSS.appBody }>
