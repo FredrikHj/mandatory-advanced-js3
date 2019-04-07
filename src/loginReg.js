@@ -29,14 +29,17 @@ export function Reg(props) {
           </div>
       </form>
 
-          <section className={ regCSS.errorRegContainer } //style={(props.errorData.validRegInfo === true) ? {display: 'block'} : {display: 'none'}}
-          >
-            <p>{ props.errorData.errorMess }</p>
+          <section className={ regCSS.errorRegContainer }>
+            <button className={ regCSS.regBtn } onClick={ props.submitReg }>Registrera!</button>
+            <span
+            
+            >{ props.errorData.errorMess }   
+            </span>
           </section>
 
-         <button className={ regCSS.regBtn } onClick={ props.submitReg }>Registrera!</button>
     </>
   );
+  //style={(props.errorData.validRegInfo === true) ? {display: 'block'} : {display: 'none'}} */
 }
 
 export function Login(props) {

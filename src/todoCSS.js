@@ -53,10 +53,10 @@ export const headerCSS = {
 export const regCSS = { 
   regContainer: indenticalCSS.containerRegLogin,
   regBtn: css({
-    'position': 'relative',
+    /* 'position': 'relative',
     'top': '7px',
-    'left': '47px',
-    'marginBottom': '12px',
+    'left': '-121px',
+    'marginBottom': '34px', */
   }),
   errorRegContainer: css({
     'position': 'relative',
@@ -67,6 +67,7 @@ export const regCSS = {
     'marginBottom': '-34px',
   }),
   errorRegMess: css({
+    
   }),
 }
 /* ========================= Login ========================= */
