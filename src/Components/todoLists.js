@@ -1,18 +1,20 @@
-import React, { Component, PureComponent } from 'react';
+import React, { Component } from 'react';
 import {Helmet} from "react-helmet";
 import axios from 'axios';
-
-// CSS is imported
-import { todoListCSS } from './todoCSS';
+import { userToken$ } from './store';
 
 // React Router - ES6 modules
-import { BrowserRouter as Router, Route, Link, Redirect } from "react-router-dom";
+import { BrowserRouter as Redirect } from "react-router-dom";
 
-class TodoList extends PureComponent {
+// CSS is imported
+import { todoListCSS } from '../todoCSS';
+
+class TodoList extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      todoItem: []
+      todoItem: [],
+      userToken: ''
     }
     this.apiUrl = this.apiUrl;
     this.addItem = this.addItem.bind(this);
@@ -23,10 +25,20 @@ class TodoList extends PureComponent {
   componentDidMount() {
     this.apiUrl = 'http://ec2-13-53-32-89.eu-north-1.compute.amazonaws.com:3000';
     let API_ROOT = this.apiUrl;
-    console.log(this.props.userToken);
+    // Get the token and check it for changes
+/*     this.subscription = userToken$.subscribe((userToken) => {
+      if (userToken) {
+        this.setState({ userToken: userToken$.value });
+      } else {  
+        this.setState({ userToken: '' });
+      }
+    }); */
+
+    console.log(userToken$.value);
+    
     this.itemCounter = 0;
     axios.get(API_ROOT + '/todos', {
-      headers: { Authorization: 'Bearer ' + this.props.userToken }
+      headers: { Authorization: 'Bearer ' + userToken$.value }
     })
     .then(response => {
       if (response.status === 200) {
@@ -41,6 +53,8 @@ class TodoList extends PureComponent {
       
     });
   }
+
+
   addItem(e) {
     // Add a input string into my array to be displayed i the list
     let getInputStr = e.target.value;
@@ -54,7 +68,7 @@ class TodoList extends PureComponent {
       The component will be send to the server and the server is send the todo list back. */
       let API_ROOT = this.apiUrl;
       axios.post(API_ROOT + '/todos', {
-        content: getInputStr }, { headers: { Authorization: 'Bearer ' + this.props.userToken }
+        content: getInputStr }, { headers: { Authorization: 'Bearer ' + userToken$.value }
       }).then(response => {
         console.log(response);
         this.setState({ todoItem: [ 
@@ -73,7 +87,7 @@ class TodoList extends PureComponent {
     let targetRemoveBtnId = e.target.id;
     let API_ROOT = this.apiUrl;
     axios.delete(API_ROOT + '/todos/' + targetRemoveBtnId, {
-      headers: { Authorization: 'Bearer ' + this.props.userToken }
+      headers: { Authorization: 'Bearer ' + userToken$.value }
     }).then(response => {
       console.log(response);
       
@@ -134,8 +148,6 @@ class TodoList extends PureComponent {
                             <div className={ todoListCSS.todoItem }><span>{ obj.content.charAt(0).toUpperCase() + obj.content.slice(1) }</span></div>
                             <div className={ todoListCSS.removeTodo }><button id={ obj.id } value={ obj.id } onClick={ this.removeItem }>X</button></div>
                           </div>
-                          
-                        
                         </section>
                       );
                     })

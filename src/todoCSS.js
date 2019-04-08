@@ -1,5 +1,4 @@
 import { css } from 'glamor';
-import { relative } from 'path';
 
 let indenticalCSS = {
   containerRegLogin:  css({
@@ -39,7 +38,7 @@ export const headerCSS = {
   logOutBtn: css({
     'position': 'relative',
     'top': '21px',
-    'right': '60px',
+    'right': '75px',
     'width': '70px',
   }),
   inloggedUser: css({
@@ -100,6 +99,7 @@ export const todoListCSS = {
   todoHeadline: css({
     'marginTop': '1px',
   }),
+
   todoItem: css({
     'display': 'inline-block',
     'marginLeft': '10px',
@@ -129,6 +129,7 @@ export const todoListCSS = {
   lineAddItem: css({
     'marginLeft': '10px',
   }),
+  
   todoItem: css({
     'display': 'inline-block',
     'marginLeft': '10px',

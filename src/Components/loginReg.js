@@ -2,10 +2,10 @@ import React, { Component } from 'react';
 import {Helmet} from "react-helmet";
 
 // CSS is imported
-import { regCSS, loginCSS } from './todoCSS';
+import { regCSS, loginCSS } from '../todoCSS';
 
 // React Router - ES6 modules
-import { BrowserRouter as Router, Route, Link, Redirect } from "react-router-dom";
+import { BrowserRouter as Link, Redirect } from "react-router-dom";
 
 export function Reg(props) {
   if (props.logedIn === true) return <Redirect to="/"/>;
@@ -38,7 +38,6 @@ export function Reg(props) {
 
 export function Login(props) {
   console.log();
-  console.log(props);
   if (props.logedIn === true) return <Redirect to="/Lista"/>;
   return (
     <>

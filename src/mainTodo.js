@@ -1,18 +1,19 @@
-import React, { Component, PureComponent } from 'react';
-import SecureKey from 'jsonwebtoken';
+import React, { Component } from 'react';
 import axios from 'axios';
 
-import TodoList from './todoLists';
-import Header from './header';
-import { Reg, Login } from './loginReg';
+import Header from './Components/header';
+import { Reg, Login } from './Components/loginReg';
+import TodoList from './Components/todoLists';
+import { updateToken } from './Components/store';
+
 
 // CSS is imported
 import { mainWindowCSS } from './todoCSS';
 
 // React Router - ES6 modules
-import { BrowserRouter as Router, Route, Link, Redirect } from "react-router-dom";
+import { BrowserRouter as Router, Route, Redirect } from "react-router-dom";
 
-class TodoApp extends PureComponent {
+class TodoApp extends Component {
     constructor(props) {
       super(props);
       // Sett intialstate for the functions in the app. Group some of them together
@@ -26,6 +27,7 @@ class TodoApp extends PureComponent {
     this.urlApi = this.urlApi;
 
     this.logIn = this.logIn.bind(this);
+    this.keepLogedIn = this.keepLogedIn.bind(this);
     this.submitReg = this.submitReg.bind(this);
     this.userEmail = this.userEmail;
     this.onChangeUserName = this.onChangeUserName.bind(this);
@@ -33,24 +35,7 @@ class TodoApp extends PureComponent {
     this.logOut = this.logOut.bind(this);
   }
   componentDidMount() {
-    this.urlApi = 'http://ec2-13-53-32-89.eu-north-1.compute.amazonaws.com:3000';
-          
-    let getParsedUserStoredData = JSON.parse(localStorage.getItem('userDataToJson'));
-    console.log(getParsedUserStoredData);    
-
-    //  Check if localStorage is containing a user if yes the user will always be inlogged
-     if (localStorage.getItem('userDataToJson') !== 'undefined' && localStorage.getItem('userDataToJson') !== null) {
-      //let getParsedUserStoredData = JSON.parse(localStorage.getItem('userDataToJson'));
-
-
-      
-      this.setState({
-        logedIn: true,
-        regInformation: { 
-          userName: getParsedUserStoredData.email,
-          token: getParsedUserStoredData.token}
-      });     
-    }
+    this.urlApi = 'http://ec2-13-53-32-89.eu-north-1.compute.amazonaws.com:3000';;     
   }
   onChangeUserName(e) {
     let targetUserName = e.target.value;
@@ -71,7 +56,6 @@ class TodoApp extends PureComponent {
     });
   }
   submitReg(e) {
-    // Is creating ha hidden and secure jwt for the user has ben registred
     let sendUserName = this.state.regInformation.userName;
     let sendUserPwd = this.state.regInformation.userPwd;
 
@@ -84,10 +68,8 @@ class TodoApp extends PureComponent {
       }
     )
     .then(response => {
-
-      
       if (response.status === 201) {
-              console.log(response);
+        console.log(response);
         this.setState({
           redirect: true
         });
@@ -111,6 +93,7 @@ class TodoApp extends PureComponent {
       
       /* String clean up -> turn str into array, one word is one index --> remove index 0 ---> loop through the array into a string sentence againg.
          Last turn the first letter to a bigg one */
+      
       let errorStrCleanUp = typeOfValidMess.split(' ');
       errorStrCleanUp.shift();
 
@@ -142,29 +125,24 @@ class TodoApp extends PureComponent {
       password: getYorUserPwd
     })
     .then(response => {
-
+      
       if (response.status === 200) {
-        let userSecureJWT = response.data.token;
+        // Get the userName for the header. Save the token in localStorage and sent it to store.js.
+        let userTokenFromServer = response.data.token; 
+        console.log(userTokenFromServer);
+        updateToken(userTokenFromServer);
+        window.localStorage.setItem('userToken', userTokenFromServer);
 
-        // Get the userName for the header
-        let userDecodedData = SecureKey.decode(userSecureJWT);
-        let userName = userDecodedData.email;
-        let inlogedUserInfo = { email: userName, token: userSecureJWT };
-
-
-        // Store the userInlogg even when the browser is closed or refreshed
-        localStorage.setItem('userDataToJson', JSON.stringify(inlogedUserInfo));
-        
-         this.setState({
-          redirect: false,
-          logedIn: true
-        });
+         
+        this.setState({
+         redirect: false,
+         logedIn: true
+         });
       }
     })  
     .catch((error) => {
-      let errorData = error.response
-      console.log(errorData.data.message);
-      
+      let errorData = error.response;
+
       if (errorData.status === 400 || errorData.status === 401) {
         this.setState({
           userValid: { value: false, errorMess: errorData.data.message }
@@ -175,6 +153,12 @@ class TodoApp extends PureComponent {
     console.log('Du är inloggad :)');
     
     e.preventDefault();
+  }
+  /* A callback is receiving a value true or false that will trigger the user
+   to be inlogged untill the user is logout itself :) */
+  keepLogedIn(value) {
+    console.log(value);
+    this.setState({logedIn: value});
   }
   logOut() {
     localStorage.clear('userDataToJson');
@@ -193,6 +177,7 @@ class TodoApp extends PureComponent {
         <Header
           regUser={ this.state.regInformation.userName }
           logedIn={ this.state.logedIn }
+          keepLogedIn={ this.keepLogedIn }
           logOut={ this.logOut }
         />
           <main>
