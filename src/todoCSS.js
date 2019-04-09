@@ -62,7 +62,13 @@ export const regCSS = {
   }),
   errorRegMess: css({
     'marginLeft': '50px',
-   }),
+  }),
+  redToLogin: css({
+    'position': 'relative', 
+    'top': '5px',
+    'witdh': '100px',
+    'left': 'calc(50% - 50px)',
+  }),
 }
 /* ========================= Login ========================= */
 export const loginCSS = { 

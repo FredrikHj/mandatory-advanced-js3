@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
+import SecureKey from 'jsonwebtoken';
 
 // CSS is imported
 import { headerCSS } from '../todoCSS';
-import { userName$ } from './store';
+import { userToken$ } from './store';
 
 class Header extends Component {
   
@@ -12,30 +13,34 @@ class Header extends Component {
       userName: ''
     }
   }
-  componentDidMount() {
-    console.log('header');
-    
+  componentDidMount() {    
     let value;
-    this.subscription = userName$.subscribe((userName) => {      
-      if (userName) {
-        console.log('Namn');
-        this.setState({ userName: userName$.value });
-        value = true;
-        this.props.keepLogedIn(value);
-      } else {  
-        this.setState({ username: "" });
-        value = false;
-        this.props.keepLogedIn(value);
-      }
+
+    // Get token and decode it for display the userNae
+    //let userToken = JSON.parse(getLSData);
+        
+        
+        
+    this.subscription = userToken$.subscribe((userToken) => {      
+    console.log(userToken);
+    if (userToken) {
+      const userDecodedToken = SecureKey.decode(userToken);
+      let userName = userDecodedToken.email;
+      this.setState({ userName: userName });
+      value = true;
+      this.props.keepLogedIn(value);
+    } 
+    else {  
+      this.setState({ username: "" });
+      value = false;
+      this.props.keepLogedIn(value);
+    }
     });
   }
   componentWillUnmount() {
     this.subscription.unsubscribe();
 }
   render() {
-    console.log(this.props);
-    console.log(userName$.value);
-    console.log(this.state.userName);
     return (
       <header>
         <p className={ headerCSS.pagesHeadLine }>Todolista</p>

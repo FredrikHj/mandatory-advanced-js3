@@ -4,7 +4,7 @@ import axios from 'axios';
 import { userToken$ } from './store';
 
 // React Router - ES6 modules
-import { BrowserRouter as Redirect } from "react-router-dom";
+import { BrowserRouter as Router, Route, Redirect } from "react-router-dom";
 
 // CSS is imported
 import { todoListCSS } from '../todoCSS';
@@ -19,48 +19,49 @@ class TodoList extends Component {
     this.apiUrl = this.apiUrl;
     this.addItem = this.addItem.bind(this);
     this.removeItem = this.removeItem.bind(this);
-    this.submitList = this.submitList.bind(this);
-    
+    this.submitList = this.submitList.bind(this);   
+    this.runTodoList = this.runTodoList.bind(this);
   }
   componentDidMount() {
+    console.log('Run list');
+    
     this.apiUrl = 'http://ec2-13-53-32-89.eu-north-1.compute.amazonaws.com:3000';
     let API_ROOT = this.apiUrl;
     // Get the token and check it for changes
-/*     this.subscription = userToken$.subscribe((userToken) => {
+    this.subscription = userToken$.subscribe((userToken) => {
       if (userToken) {
+        console.log('Lyssna och sätter token');
         this.setState({ userToken: userToken$.value });
       } else {  
         this.setState({ userToken: '' });
       }
-    }); */
-
-    console.log(userToken$.value);
-    
-    this.itemCounter = 0;
-    axios.get(API_ROOT + '/todos', {
-      headers: { Authorization: 'Bearer ' + userToken$.value }
-    })
-    .then(response => {
-      if (response.status === 200) {
-        this.setState({
-          todoItem: response.data.todos
-        });
-      }
-      console.log(response);
-    })
-    .catch(error => {
-      
-      
     });
+    this.runTodoList();
   }
-
-
+    runTodoList() {
+      this.itemCounter = 0;
+      let API_ROOT = this.apiUrl;
+      axios.get(API_ROOT + '/todos', {
+        headers: { Authorization: 'Bearer ' + userToken$.value }
+      })
+      .then(response => {
+        if (response.status === 200) {
+          this.setState({
+            todoItem: response.data.todos
+          });
+        }
+        console.log(response);
+      })
+      .catch(error => {
+        console.log(error.response);
+      });
+      
+    }
   addItem(e) {
     // Add a input string into my array to be displayed i the list
     let getInputStr = e.target.value;
     let getKeyDown = e.key;
     console.log(getInputStr);
-    
     
     //React according the key Enter
     if(getKeyDown === 'Enter'){      
@@ -85,19 +86,18 @@ class TodoList extends Component {
     let targetRemoveBtnIndex = parseInt(e.target.value);
     console.log(targetRemoveBtnIndex);
     let targetRemoveBtnId = e.target.id;
+    console.log(typeof targetRemoveBtnIndex);
+    
     let API_ROOT = this.apiUrl;
     axios.delete(API_ROOT + '/todos/' + targetRemoveBtnId, {
       headers: { Authorization: 'Bearer ' + userToken$.value }
     }).then(response => {
       console.log(response);
+      let newMTodoList = [...this.state.todoItem.slice(0, targetRemoveBtnIndex), ...this.state.todoItem.slice(targetRemoveBtnIndex + 1)];
       
-      
+      this.setState({ todoItem: newMTodoList });      
     })
     
-    let newMTodoList = [...this.state.todoItem.slice(0, targetRemoveBtnIndex), ...this.state.todoItem.slice(targetRemoveBtnIndex + 1)
-    ];
-    
-    this.setState({ todoItem: newMTodoList});
     
     e.preventDefault();
   }
@@ -111,14 +111,13 @@ class TodoList extends Component {
     e.preventDefault();
   }
   render() {
-    console.log('todoLists');
+    console.log(this.state.todoItem);
+    
     let itemCounter = -1;
     let todoNr = 0;
     let renderTodos = this.state.todoItem;
-    console.log(renderTodos);
     
     if (this.props.logedIn === false) return <Redirect to="/"/>;
-    
     return (
       <>
        <Helmet>
@@ -146,7 +145,7 @@ class TodoList extends Component {
                             <div className={ todoListCSS.todoTNr }>{todoNr + '.)'}</div>
                             <span className={ todoListCSS.lineAddItem }>-</span>
                             <div className={ todoListCSS.todoItem }><span>{ obj.content.charAt(0).toUpperCase() + obj.content.slice(1) }</span></div>
-                            <div className={ todoListCSS.removeTodo }><button id={ obj.id } value={ obj.id } onClick={ this.removeItem }>X</button></div>
+                            <div className={ todoListCSS.removeTodo }><button id={ obj.id } value={ itemCounter } onClick={ this.removeItem }>X</button></div>
                           </div>
                         </section>
                       );

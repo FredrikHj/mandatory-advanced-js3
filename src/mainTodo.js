@@ -25,8 +25,8 @@ class TodoApp extends Component {
       }
 
     this.urlApi = this.urlApi;
-
     this.logIn = this.logIn.bind(this);
+    this.backToLogin = this.backToLogin.bind(this);
     this.keepLogedIn = this.keepLogedIn.bind(this);
     this.submitReg = this.submitReg.bind(this);
     this.userEmail = this.userEmail;
@@ -39,7 +39,6 @@ class TodoApp extends Component {
   }
   onChangeUserName(e) {
     let targetUserName = e.target.value;
-    console.log(targetUserName);
     this.setState({
       regInformation: {
         ...this.state.regInformation,
@@ -58,9 +57,6 @@ class TodoApp extends Component {
   submitReg(e) {
     let sendUserName = this.state.regInformation.userName;
     let sendUserPwd = this.state.regInformation.userPwd;
-
-    console.log(sendUserName);
-    console.log(sendUserPwd);
     axios.post(this.urlApi + '/register',
       {
         email: sendUserName,
@@ -68,14 +64,15 @@ class TodoApp extends Component {
       }
     )
     .then(response => {
+      console.log(response);
       if (response.status === 201) {
-        console.log(response);
         this.setState({
           redirect: true
         });
       }
     })
     .catch((error) => {
+      console.log(error);
       let typeOfValidMess, chosenErrorMess;
       let errorData = error.response;
       let validMess = errorData.data.message;
@@ -89,7 +86,6 @@ class TodoApp extends Component {
       typeOfValidMess = errorData.data.message;
       chosenErrorMess = errorData.data.message;
      }
-      console.log(errorData);
       
       /* String clean up -> turn str into array, one word is one index --> remove index 0 ---> loop through the array into a string sentence againg.
          Last turn the first letter to a bigg one */
@@ -117,6 +113,22 @@ class TodoApp extends Component {
     })
     e.preventDefault();
   }
+  backToLogin() {
+    console.log('ef');
+    
+    this.setState({ 
+      userValid: {
+        ...this.state.userValid, 
+        value: true
+      },
+      regInformation: {
+        ...this.state.regInformation,
+        validRegInfo: true,
+        errorMess: ''
+      }
+
+    }); 
+  }
   logIn(e) {
     let getYorUserName = this.state.regInformation.userName;
     let getYorUserPwd = this.state.regInformation.userPwd;
@@ -125,30 +137,35 @@ class TodoApp extends Component {
       password: getYorUserPwd
     })
     .then(response => {
-      
+      console.log(response);
       if (response.status === 200) {
+        console.log('Then - login');
+        
         // Get the userName for the header. Save the token in localStorage and sent it to store.js.
-        let userTokenFromServer = response.data.token; 
+        let userTokenFromServer = response.data.token;
         console.log(userTokenFromServer);
+        
         updateToken(userTokenFromServer);
         window.localStorage.setItem('userToken', userTokenFromServer);
-
-         
+        
         this.setState({
          redirect: false,
          logedIn: true
-         });
+        });
+
       }
     })  
     .catch((error) => {
       let errorData = error.response;
-
+      console.log(errorData);
+      
       if (errorData.status === 400 || errorData.status === 401) {
+        console.log('Catch - login');
+       
         this.setState({
           userValid: { value: false, errorMess: errorData.data.message }
-        });      
+        });   
       }
-
     })
     console.log('Du är inloggad :)');
     
@@ -157,11 +174,10 @@ class TodoApp extends Component {
   /* A callback is receiving a value true or false that will trigger the user
    to be inlogged untill the user is logout itself :) */
   keepLogedIn(value) {
-    console.log(value);
     this.setState({logedIn: value});
   }
   logOut() {
-    localStorage.clear('userDataToJson');
+    window.localStorage.clear('userToken');
 
     this.setState({
        logedIn: false,
@@ -170,7 +186,6 @@ class TodoApp extends Component {
     console.log('Du är utloggad :)');
   }
   render() {
-    console.log('mainTodo');
     return (
       <>
         <div className={ mainWindowCSS.appBody }>
@@ -198,6 +213,8 @@ class TodoApp extends Component {
                   onChangeUserPwd={ this.onChangeUserPwd }
                   submitReg={ this.submitReg }
                   errorData={ this.state.regInformation }
+                  backToLogin={ this.backToLogin }
+                  userValid={ this.state.userValid }
                 />}
               />
             <Route exact path="/Lista" render={(props) => <TodoList {...props}

@@ -1,23 +1,25 @@
 import {BehaviorSubject} from "rxjs";
 import SecureKey from 'jsonwebtoken';
-let getLSData = window.localStorage.getItem("userToken");
-console.log(getLSData);
+console.log('Store');
 
-// Get token and the userNam
-//let userToken = JSON.parse(getLSData);
-const userDecodedToken = SecureKey.decode(getLSData);
 
-let userName = userDecodedToken;//.email;
-console.log(userName);
+//let userName = userDecodedToken;//.email;
 
-export const userName$ = new BehaviorSubject(userName);
-export const userToken$ = new BehaviorSubject(getLSData);
+export const userName$ = new BehaviorSubject();
+export const userToken$ = new BehaviorSubject(window.localStorage.getItem("userToken"));
 export function updateToken(userToken){
+    console.log(userToken);
+// Get token and decode it for display the userNam
+//let userToken = JSON.parse(getLSData);
+const userDecodedToken = SecureKey.decode(userToken);
+
     if(userToken === null){
         window.localStorage.removeItem("userToken");
-        userName$.next(userDecodedToken.email);
+
+        userToken$.next(userToken);
     }else{
-        userName$.next(userDecodedToken.email);
+
+        userToken$.next(userToken);
     }
 }
 
