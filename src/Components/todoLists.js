@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import {Helmet} from "react-helmet";
 import axios from 'axios';
-import { userToken$ } from './store';
+import { userToken$, updateCurrentPage } from './store';
 
 // React Router - ES6 modules
 import { BrowserRouter as Router, Route, Redirect } from "react-router-dom";
@@ -111,6 +111,7 @@ class TodoList extends Component {
     e.preventDefault();
   }
   render() {
+    updateCurrentPage(' ');
     console.log(this.state.todoItem);
     
     let itemCounter = -1;
@@ -130,7 +131,8 @@ class TodoList extends Component {
         </section>
         {
           (renderTodos.length === 0)
-          ? <p className={ todoListCSS.noneItem }>Inget att visa !!!</p>
+          ? <p className={ todoListCSS.noneItem }>Ingen data att visa men det kanske kommer?
+           <br/><br/>Spänningen är olidlig ;)</p>
           : <>
               <section className={ todoListCSS.itemFram }>
                 <form>

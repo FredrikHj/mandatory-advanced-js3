@@ -47,6 +47,9 @@ export const headerCSS = {
     'right': '-253px',
     'fontSize': '12px',
   }),
+  moveLeft: css({
+    'marginLeft': '15px',
+  }),
 }
 /* ========================= Reg ========================= */
 export const regCSS = { 
@@ -80,11 +83,12 @@ export const loginCSS = {
   errorLoginMess: css({
     'fontSize': '10px',
     'color': 'red',
+    'marginBottom': '-21px',
   }),
   regText: css({
     'display': 'block',
-    'marginTop': '-22px',
-    'marginLeft': '117px',
+    'marginTop': '9.5px',
+    'marginLeft': '130px',
     'fontSize': '10px',
     'fontWeight': 'bold',
     'marginBottom': '-21px',

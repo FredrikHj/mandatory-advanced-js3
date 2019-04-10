@@ -20,6 +20,7 @@ class TodoApp extends Component {
       this.state = {
         redirect: true,
         regInformation: { userName: '', token: '', validRegInfo: true, errorMess: ''},
+        userIsCreated: { value: false, mess: '' },
         userValid: { value: true, errorMess: '' },
         logedIn: false
       }
@@ -64,10 +65,11 @@ class TodoApp extends Component {
       }
     )
     .then(response => {
-      console.log(response);
       if (response.status === 201) {
+        let userCreated = response.data.email + ' - ' + response.statusText + ' :)';
         this.setState({
-          redirect: true
+          userIsCreated: { value: true, mess: userCreated },
+          //redirect: true
         });
       }
     })
@@ -186,6 +188,8 @@ class TodoApp extends Component {
     console.log('Du är utloggad :)');
   }
   render() {
+    console.log(this.state.regInformation );
+    
     return (
       <>
         <div className={ mainWindowCSS.appBody }>
@@ -194,6 +198,7 @@ class TodoApp extends Component {
           logedIn={ this.state.logedIn }
           keepLogedIn={ this.keepLogedIn }
           logOut={ this.logOut }
+
         />
           <main>
             <hr className={ mainWindowCSS.hr }/>
@@ -215,6 +220,7 @@ class TodoApp extends Component {
                   errorData={ this.state.regInformation }
                   backToLogin={ this.backToLogin }
                   userValid={ this.state.userValid }
+                  userIsCreated={ this.state.userIsCreated }
                 />}
               />
             <Route exact path="/Lista" render={(props) => <TodoList {...props}

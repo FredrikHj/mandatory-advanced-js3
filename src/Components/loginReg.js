@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import {Helmet} from "react-helmet";
+import { updateCurrentPage } from './store';
 
 // CSS is imported
 import { regCSS, loginCSS } from '../todoCSS';
@@ -10,19 +11,17 @@ import { BrowserRouter as Router, Route, Link, Redirect } from "react-router-dom
 export class Reg extends Component {
   constructor(props) {
     super(props);
-    this.state = {
- 
-    }
-
   }
 
   render() {
-    let incommingerrorState = this.props.errorData.errorMess;
-    let errorMess = 'User with that email address exists';
-    console.log(this.props.userValid );
+    updateCurrentPage(' - Registrering');
+    let incommingErrorState = this.props.errorData.errorMess;
+    console.log(incommingErrorState);
     
-    if ( this.props.userValid.value === true) return <Redirect to="/"/>;
-    
+    let incommingCreatedState = this.props.userIsCreated; // Contains the created mess
+      console.log(incommingCreatedState);
+      
+    //if ( this.props.userValid.value === true) return <Redirect to="/"/>;
       return (
         <>
         <Helmet>
@@ -43,17 +42,21 @@ export class Reg extends Component {
         </form>
         <section className={ regCSS.errorRegContainer }>
           <button className={ regCSS.regBtn } onClick={ this.props.submitReg }>Registrera!</button>
-          <span className={ regCSS.errorRegMess } style={(this.props.errorData.validRegInfo === false) ? {display: 'inline-block'} : {display: 'none'}}>{ incommingerrorState }</span>
+          <span className={ regCSS.errorRegMess } style={(this.props.errorData.validRegInfo === false) 
+          ? {display: 'inline-block'} : {display: 'none'}}>{ incommingErrorState }</span>
+          <span className={ regCSS.errorRegMess } style={(incommingCreatedState.value === true)
+          ? {display: 'inline-block'} : {display: 'none'}}>{ incommingCreatedState.mess }</span>
         </section>
-        <button className={ regCSS.redToLogin } style={(incommingerrorState === errorMess) ? {display: 'block'} : {display: 'none'}}
-        onClick={ this.props.backToLogin }>Logga In Sida</button>
+        <button className={ regCSS.redToLogin }
+        onClick={ this.props.backToLogin }><Link to="/">iLogga In Sida</Link></button>
       </>
     );
     
   }
 }
 
-export function Login(props) {
+export function Login(props) {  
+  updateCurrentPage(' - Login');
   if (props.logedIn === true) return <Redirect to="/Lista"/>;
   return (
     <>
@@ -76,8 +79,8 @@ export function Login(props) {
         <section className={ loginCSS.errorLoginContainer } style={(props.userValid.value === false)
         ? {display: 'block'} : {display: 'none'}}>
           <p className={ loginCSS.errorLoginMess }>{ props.userValid.errorMess }</p>
-          <Link className={ loginCSS.regText } to="/Reg" onClick={ props.reg }>Registrera dig?</Link>
         </section>
+          <Link className={ loginCSS.regText } to="/Reg">Registrera dig?</Link>
       </form>
       <input type="submit" className={ loginCSS.logInBtn } onClick={ props.logIn } value="Logga In" />
     </>

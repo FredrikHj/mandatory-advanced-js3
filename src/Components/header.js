@@ -3,14 +3,15 @@ import SecureKey from 'jsonwebtoken';
 
 // CSS is imported
 import { headerCSS } from '../todoCSS';
-import { userToken$ } from './store';
+import { userToken$, currentPage$ } from './store';
 
 class Header extends Component {
   
   constructor(props) {
     super(props);
     this.state = {
-      userName: ''
+      userName: '',
+      currentPage: ''
     }
   }
   componentDidMount() {    
@@ -19,7 +20,10 @@ class Header extends Component {
     // Get token and decode it for display the userNae
     //let userToken = JSON.parse(getLSData);
         
-        
+    this.subscription = currentPage$.subscribe((currentPage) => {
+      console.log(currentPage);
+      this.setState({currentPage: currentPage })
+    });
         
     this.subscription = userToken$.subscribe((userToken) => {      
     console.log(userToken);
@@ -43,11 +47,11 @@ class Header extends Component {
   render() {
     return (
       <header>
-        <p className={ headerCSS.pagesHeadLine }>Todolista</p>
+        <p className={ headerCSS.pagesHeadLine }>Todolista { this.state.currentPage }</p>
         <section className={ headerCSS.inloggedUser }>
           {
             (this.props.logedIn === false)
-            ? <p>Inte inloggad</p>
+            ? <p className={ headerCSS.moveLeft }>Inte inloggad</p>
             : <p>{ this.state.userName } <button className={ headerCSS.logOutBtn } onClick={ this.props.logOut }>Logga ut</button></p>
           }
         </section>
